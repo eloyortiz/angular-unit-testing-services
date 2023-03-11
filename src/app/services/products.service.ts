@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpParams, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { throwError, zip } from 'rxjs';
+import { Observable, throwError, zip } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
 
 import { environment } from './../../environments/environment';
@@ -17,7 +17,7 @@ export class ProductsService {
     private http: HttpClient
   ) { }
 
-  getByCategory(categoryId: string, limit?: number, offset?: number){
+  getByCategory(categoryId: string, limit?: number, offset?: number): Observable<Product[]>{
     let params = new HttpParams();
     if (limit && offset != null) {
       params = params.set('limit', limit);
@@ -30,7 +30,7 @@ export class ProductsService {
     return this.http.get<Product[]>(`${this.apiUrl}/products`);
   }
 
-  getAll(limit?: number, offset?: number) {
+  getAll(limit?: number, offset?: number): Observable<Product[]> {
     let params = new HttpParams();
     if (limit && offset != null) {
       params = params.set('limit', limit);
@@ -42,7 +42,7 @@ export class ProductsService {
       map(products => products.map(item => {
         return {
           ...item,
-          taxes: .19 * item.price
+          taxes: item.price > 0 ? .19 * item.price : 0
         }
       }))
     );
@@ -55,7 +55,7 @@ export class ProductsService {
     );
   }
 
-  getOne(id: string) {
+  getOne(id: string): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/products/${id}`)
     .pipe(
       catchError((error: HttpErrorResponse) => {
