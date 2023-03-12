@@ -1,7 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { generateManyProducts, generateOneProduct } from "../models/product.mock";
-import { CreateProductDTO, Product } from '../models/product.model';
+import { CreateProductDTO, Product, UpdateProductDTO } from '../models/product.model';
 import { environment } from "./../../environments/environment";
 import { ProductsService } from "./products.service";
 
@@ -146,9 +146,57 @@ fdescribe('Product Service', () => {
        //http config
        const url = `${environment.API_URL}/api/v1/products`;
        const request = httpController.expectOne(url);
-       request.flush(mockData);
        expect(request.request.body).toEqual(dto);
        expect(request.request.method).toEqual('POST');
+       request.flush(mockData);
+    });
+
+  });
+
+  describe('test for update product', () => {
+
+    it('should return an updated product', (doneFn) => {
+      //Arrange
+      const mockData = generateOneProduct();
+      const dto: UpdateProductDTO = {
+        title: 'updated Product',
+      }
+      const productId = '123';
+      //Act
+      productService.update(productId,{...dto}).subscribe( data => {
+        //Assert
+        expect(data).toEqual(mockData);
+        doneFn();
+      });
+
+       //http config
+       const url = `${environment.API_URL}/api/v1/products/${productId}`;
+       const request = httpController.expectOne(url);
+       expect(request.request.body).toEqual(dto);
+       expect(request.request.method).toEqual('PUT');
+       request.flush(mockData);
+    });
+
+  });
+
+  describe('test for delete product', () => {
+
+    it('should delete a product, return if it was deleted', (doneFn) => {
+      //Arrange
+      const mockData = true;
+      const productId = '123';
+      //Act
+      productService.delete(productId).subscribe( data => {
+        //Assert
+        expect(data).toEqual(mockData);
+        doneFn();
+      });
+
+       //http config
+       const url = `${environment.API_URL}/api/v1/products/${productId}`;
+       const request = httpController.expectOne(url);
+       expect(request.request.method).toEqual('DELETE');
+       request.flush(mockData);
     });
 
   });
