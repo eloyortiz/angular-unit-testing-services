@@ -8,7 +8,7 @@ import { environment } from "./../../environments/environment";
 import { ProductsService } from "./products.service";
 import { TokenService } from './token.service';
 
-fdescribe('Product Service', () => {
+describe('Product Service', () => {
   let productService: ProductsService;
   let httpController: HttpTestingController;
   let tokenService: TokenService;
