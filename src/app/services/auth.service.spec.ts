@@ -1,14 +1,16 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { TokenInterceptor } from '../interceptors/token.interceptor';
 import { Auth } from '../models/auth.model';
 import { environment } from './../../environments/environment';
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
 
-
-fdescribe('AuthService', () => {
+describe('AuthService', () => {
   let authService: AuthService;
   let httpController: HttpTestingController;
   let tokenService: TokenService;
@@ -16,13 +18,15 @@ fdescribe('AuthService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers:[
+      providers: [
         AuthService,
         TokenService,
         {
-          provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true
-        }
-      ]
+          provide: HTTP_INTERCEPTORS,
+          useClass: TokenInterceptor,
+          multi: true,
+        },
+      ],
     });
     authService = TestBed.inject(AuthService);
     httpController = TestBed.inject(HttpTestingController);
@@ -41,7 +45,7 @@ fdescribe('AuthService', () => {
     it('should return a token', (doneFn) => {
       //Arrange
       const mockData: Auth = {
-        access_token: '121212'
+        access_token: '121212',
       };
       const email = 'john@doe.com';
       const password = '123123';
@@ -55,14 +59,14 @@ fdescribe('AuthService', () => {
 
       //http config
       const url = `${environment.API_URL}/api/v1/auth/login`;
-      const request = httpController.expectOne({method: 'POST'});
+      const request = httpController.expectOne({ method: 'POST' });
       request.flush(mockData);
     });
 
     it('should call to save token', (doneFn) => {
       //Arrange
       const mockData: Auth = {
-        access_token: '121212'
+        access_token: '121212',
       };
       const email = 'john@doe.com';
       const password = '123123';
@@ -79,11 +83,8 @@ fdescribe('AuthService', () => {
 
       //http config
       const url = `${environment.API_URL}/api/v1/auth/login`;
-      const request = httpController.expectOne({method: 'POST'});
+      const request = httpController.expectOne({ method: 'POST' });
       request.flush(mockData);
     });
-
-
   });
-
 });
